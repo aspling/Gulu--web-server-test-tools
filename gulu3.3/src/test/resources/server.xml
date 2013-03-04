@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans default-autowire="byName">
+
+   <bean id="nginxLimitReqServer" class="com.taobao.gulu.server.NginxServer">
+        <property name="host" value="10.232.4.32"/>
+       	<property name="port" value="8088"/>
+       	<property name="root_url_adress" value="http://10.232.4.32:8088/" />
+       	<property name="conf_file_directory" value="/home/admin/nginx_tmd_limit_req/conf/"/>
+		<property name="execute_cmd" value="/home/admin/nginx_tmd_limit_req/sbin/nginx"/>
+		<property name="server_file_directory" value="/home/admin/nginx_tmd_limit_req/" />
+		<property name="action_start" value="start" />
+		<property name="action_stop" value="stop" />
+		<property name="action_restart" value="restart" />
+		<property name="default_conf" value="nginx.conf" />
+		<property name="username" value="admin" />
+		<property name="password" value="nginxadmin" />
+    </bean>
+
+	<bean id="limitReqShellServer" class="com.taobao.gulu.server.ShellServer">
+        <property name="host" value="10.232.4.32"/>
+       	<property name="username" value="admin"/>
+       	<property name="password" value="nginxadmin"/>
+    </bean>
+    
+   <bean id="nginxTmdServer" class="com.taobao.gulu.server.NginxServer">
+        <property name="host" value="10.232.4.34"/>
+       	<property name="port" value="8088"/>
+       	<property name="root_url_adress" value="http://10.232.4.34:8088/" />
+       	<property name="conf_file_directory" value="/home/admin/nginx_tmd/conf/"/>
+		<property name="execute_cmd" value="/home/admin/nginx_tmd/sbin/nginx"/>
+		<property name="server_file_directory" value="/home/admin/nginx_tmd/" />
+		<property name="action_start" value="start" />
+		<property name="action_stop" value="stop" />
+		<property name="action_restart" value="restart" />
+		<property name="default_conf" value="nginx.conf" />
+		<property name="username" value="admin" />
+		<property name="password" value="nginxadmin" />
+    </bean>
+
+	<bean id="nginxTmdShellServer" class="com.taobao.gulu.server.ShellServer">
+        <property name="host" value="10.232.4.34"/>
+       	<property name="username" value="admin"/>
+       	<property name="password" value="nginxadmin"/>
+    </bean>
+    
+	<bean id="tmdShellServer" class="com.taobao.gulu.server.ShellServer">
+        <property name="host" value="10.232.4.33"/>
+       	<property name="username" value="admin"/>
+       	<property name="password" value="nginxadmin"/>
+    </bean>
+
+</beans>

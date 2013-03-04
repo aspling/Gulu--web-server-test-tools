@@ -1,0 +1,12 @@
+3.2修改：
+1. 修改BodyEntity的设计，与HttpClient的RequestEntity相结合，同时又具有可扩展性；
+2. 修改Headers的存储数据结构，从Map类型改为Header类型；
+3. 去掉Set-Cookie对象及相关处理内容；
+4. 将Response Body保存在临时文件中，提供当Content-Length存在且小于Integer.MAX_VALUE时，
+        可以通过getResponseBodyAsString获取Body内容。否则需要通过getResponseBodyAsSteam获取InputStream
+5. 新增操作Manual
+
+3.3修改：
+1. 更改进程管理的实现，新增FileHandler和ProcessHandler接口及使用jsch工具实现；
+2. 新增用户信息加密；
+3. 新增进程管理及文件管理的测试代码；
