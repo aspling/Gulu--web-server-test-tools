@@ -128,6 +128,18 @@ public class NginxServer implements Server {
 	public void setDefault_conf(String default_conf) {
 		this.default_conf = default_conf;
 	}
+	
+	public boolean reload(){
+		try {
+			String default_conf_directory = conf_file_directory + "/"
+					+ default_conf;
+			doServerCtl(default_conf_directory, "reload");
+			return detectServerStatus();
+		} catch (Exception e) {
+			logger.error(e);
+			return false;
+		}
+	}
 
 	@Override
 	public boolean start() {

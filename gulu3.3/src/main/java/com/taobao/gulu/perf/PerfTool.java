@@ -111,7 +111,7 @@ public class PerfTool {
 			BiffException {
 		Workbook wb = Workbook.getWorkbook(new File(xlsFileName));
 		Sheet readSheet = wb.getSheet(0);
-		DecimalFormat decimalformat1 = new DecimalFormat("##.##");// ��ݵ���ʾ���ֵ�ĸ�ʽ
+		DecimalFormat decimalformat1 = new DecimalFormat("##.##");
 		int column = 1;
 		int row = 1;
 		int row_tmp = 1;
@@ -143,22 +143,18 @@ public class PerfTool {
 		CategoryPlot rpsplot = rpschart.getCategoryPlot();
 		// customise the range axis...
 		NumberAxis rpsrangeAxis = (NumberAxis) rpsplot.getRangeAxis();
-		// rpsrangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());//�����������ʾС��
 		rpsrangeAxis.setAutoRangeIncludesZero(true);
 		rpsrangeAxis.setUpperMargin(0.20);
-		// rpsrangeAxis.setLabelAngle(Math.PI / 2.0);//���������
 
 		LineAndShapeRenderer rpsrenderer = (LineAndShapeRenderer) rpsplot
 				.getRenderer();
 		rpsrenderer
 				.setItemLabelGenerator(new StandardCategoryItemLabelGenerator(
 						"{2}", decimalformat1));
-		// �������������������ǩ�������
-		rpsrenderer.setItemLabelsVisible(true);// �������ǩ��ʾ
-		rpsrenderer.setBaseItemLabelsVisible(true);// �����ǩ��ʾ
-		// �����⼸��;�������ݵ㰴���趨�ĸ�ʽ��ʾ���ֵ
-		rpsrenderer.setShapesFilled(Boolean.TRUE);// ����ݵ���ʾʵ�ĵ�Сͼ��
-		rpsrenderer.setShapesVisible(true);// ������ʾСͼ��
+		rpsrenderer.setItemLabelsVisible(true);
+		rpsrenderer.setBaseItemLabelsVisible(true); 
+		rpsrenderer.setShapesFilled(Boolean.TRUE); 
+		rpsrenderer.setShapesVisible(true); 
 
 		FileOutputStream rpspng = new FileOutputStream(fileName + "_RPS.png");
 		ChartUtilities.writeChartAsPNG(rpspng, rpschart, 1000, 500);
@@ -194,23 +190,18 @@ public class PerfTool {
 		CategoryPlot tpsuplot = tpsuchart.getCategoryPlot();
 		// customise the range axis...
 		NumberAxis tpsurangeAxis = (NumberAxis) tpsuplot.getRangeAxis();
-		// tpsurangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());//�����������ʾС��
 		tpsurangeAxis.setAutoRangeIncludesZero(true);
 		tpsurangeAxis.setUpperMargin(0.20);
-		// tpsurangeAxis.setLabelAngle(Math.PI / 2.0); //���������
 
 		LineAndShapeRenderer tpsurenderer = (LineAndShapeRenderer) tpsuplot
 				.getRenderer();
 		tpsurenderer
 				.setItemLabelGenerator(new StandardCategoryItemLabelGenerator(
 						"{2}", decimalformat1));
-		// �������������������ǩ�������
-		tpsurenderer.setItemLabelsVisible(true);// �������ǩ��ʾ
-		tpsurenderer.setBaseItemLabelsVisible(true);// �����ǩ��ʾ
-		// �����⼸��;�������ݵ㰴���趨�ĸ�ʽ��ʾ���ֵ
-		tpsurenderer.setShapesFilled(Boolean.TRUE);// ����ݵ���ʾʵ�ĵ�Сͼ��
-		tpsurenderer.setShapesVisible(true);// ������ʾСͼ��
-
+		tpsurenderer.setItemLabelsVisible(true); 
+		tpsurenderer.setBaseItemLabelsVisible(true); 
+		tpsurenderer.setShapesFilled(Boolean.TRUE); 
+		tpsurenderer.setShapesVisible(true); 
 		FileOutputStream tpsupng = new FileOutputStream(fileName + "_TPSU.png");
 		ChartUtilities.writeChartAsPNG(tpsupng, tpsuchart, 1000, 500);
 		tpsupng.close();
@@ -250,22 +241,18 @@ public class PerfTool {
 		CategoryPlot tpssplot = tpsschart.getCategoryPlot();
 		// customise the range axis...
 		NumberAxis tpssrangeAxis = (NumberAxis) tpssplot.getRangeAxis();
-		// tpssrangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());//�����������ʾС��
 		tpssrangeAxis.setAutoRangeIncludesZero(true);
 		tpssrangeAxis.setUpperMargin(0.20);
-		// tpssrangeAxis.setLabelAngle(Math.PI / 2.0);//���������
 
 		LineAndShapeRenderer tpssrenderer = (LineAndShapeRenderer) tpssplot
 				.getRenderer();
 		tpssrenderer
 				.setItemLabelGenerator(new StandardCategoryItemLabelGenerator(
 						"{2}", decimalformat1));
-		// �������������������ǩ�������
-		tpssrenderer.setItemLabelsVisible(true);// �������ǩ��ʾ
-		tpssrenderer.setBaseItemLabelsVisible(true);// �����ǩ��ʾ
-		// �����⼸��;�������ݵ㰴���趨�ĸ�ʽ��ʾ���ֵ
-		tpssrenderer.setShapesFilled(Boolean.TRUE);// ����ݵ���ʾʵ�ĵ�Сͼ��
-		tpssrenderer.setShapesVisible(true);// ������ʾСͼ��
+		tpssrenderer.setItemLabelsVisible(true);
+		tpssrenderer.setBaseItemLabelsVisible(true); 
+		tpssrenderer.setShapesFilled(Boolean.TRUE); 
+		tpssrenderer.setShapesVisible(true);
 
 		FileOutputStream tpsspng = new FileOutputStream(fileName + "_TPSS.png");
 		ChartUtilities.writeChartAsPNG(tpsspng, tpsschart, 1000, 500);
@@ -301,22 +288,18 @@ public class PerfTool {
 		CategoryPlot rrplot = rrchart.getCategoryPlot();
 		// customise the range axis...
 		NumberAxis rrrangeAxis = (NumberAxis) rrplot.getRangeAxis();
-		// rrrangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());//�����������ʾС��
 		rrrangeAxis.setAutoRangeIncludesZero(true);
 		rrrangeAxis.setUpperMargin(0.20);
-		// rrrangeAxis.setLabelAngle(Math.PI / 2.0);//���������
 
 		LineAndShapeRenderer rrrenderer = (LineAndShapeRenderer) rrplot
 				.getRenderer();
 		rrrenderer
 				.setItemLabelGenerator(new StandardCategoryItemLabelGenerator(
 						"{2}", decimalformat1));
-		// �������������������ǩ�������
-		rrrenderer.setItemLabelsVisible(true);// �������ǩ��ʾ
-		rrrenderer.setBaseItemLabelsVisible(true);// �����ǩ��ʾ
-		// �����⼸��;�������ݵ㰴���趨�ĸ�ʽ��ʾ���ֵ
-		rrrenderer.setShapesFilled(Boolean.TRUE);// ����ݵ���ʾʵ�ĵ�Сͼ��
-		rrrenderer.setShapesVisible(true);// ������ʾСͼ��
+		rrrenderer.setItemLabelsVisible(true); 
+		rrrenderer.setBaseItemLabelsVisible(true); 
+		rrrenderer.setShapesFilled(Boolean.TRUE); 
+		rrrenderer.setShapesVisible(true); 
 
 		FileOutputStream rrpng = new FileOutputStream(fileName + "_RR.png");
 		ChartUtilities.writeChartAsPNG(rrpng, rrchart, 1000, 500);

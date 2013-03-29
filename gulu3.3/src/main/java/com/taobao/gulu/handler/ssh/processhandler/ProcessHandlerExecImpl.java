@@ -207,7 +207,7 @@ public class ProcessHandlerExecImpl implements ProcessHandler {
 		log.debug("command :" + command);
 		try {
 			this.channel = execChannelProvider.getChannelWithOutPty(command);
-			return getOperationResult(channel.getInputStream());
+			return getOperationResult(channel.getInputStream(), channel.getErrStream());
 		} catch (Exception e) {
 			throw new OperationException(e);
 		}
@@ -247,6 +247,7 @@ public class ProcessHandlerExecImpl implements ProcessHandler {
 			isPty = true;
 			InputStream in = this.channel.getInputStream();
 			OutputStream out = this.channel.getOutputStream();
+			InputStream er = this.channel.getErrStream();
 
 			if (authorization.getPassword() == null) {
 				out.write((channel.getSession().getUserInfo().getPassword() + "\n")
@@ -256,19 +257,20 @@ public class ProcessHandlerExecImpl implements ProcessHandler {
 			}
 			out.flush();
 
-			return getOperationResult(in);
+			return getOperationResult(in, er);
 		} catch (Exception e) {
 			throw new OperationException(e.toString());
 		}
 	}
 
-	private OperationResult getOperationResult(InputStream in)
+	private OperationResult getOperationResult(InputStream in, InputStream er)
 			throws OperationException {
 		OperationResult result = new OperationResult();
 
 		try {
 			byte[] tmp = new byte[1024];
 			StringBuffer stringBuffer = new StringBuffer();
+			StringBuffer errorBuffer = new StringBuffer();
 
 			while (true) {
 
@@ -280,6 +282,16 @@ public class ProcessHandlerExecImpl implements ProcessHandler {
 					stringBuffer.append(new String(tmp, 0, i));
 				}
 				String msg = stringBuffer.toString();
+				
+				while (er.available() > 0) {
+					int i = er.read(tmp, 0, 1024);
+					if (i < 0)
+						break;
+
+					errorBuffer.append(new String(tmp, 0, i));
+				}
+				msg = msg + errorBuffer.toString();
+				
 				if (channel.isClosed()) {
 					if (this.isPty) {
 						String password;

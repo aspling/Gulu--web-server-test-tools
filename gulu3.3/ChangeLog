@@ -10,3 +10,9 @@
 1. 更改进程管理的实现，新增FileHandler和ProcessHandler接口及使用jsch工具实现；
 2. 新增用户信息加密；
 3. 新增进程管理及文件管理的测试代码；
+
+3.4 修改：
+1. 修改AssertBehavior的ResponseHeader的验证部分
+2. 修改Set-Cookie的验证部分
+3. 修改Operation Result的error message的储存
+4. 解决OperationException 和 perfTool里面的编码问题

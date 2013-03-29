@@ -1,5 +1,7 @@
 package com.taobao.gulu.restful;
 
+import java.util.ArrayList;
+
 import org.apache.commons.httpclient.Header;
 import org.apache.log4j.Logger;
 
@@ -20,11 +22,12 @@ import com.taobao.gulu.tools.ComparisonFailureHandle;
 public class AssertBehavior {
 	private static Logger logger = Logger.getLogger(AssertBehavior.class);
 
-//	// ------------------------ MD5 ------------------------------
-//	private static char hexDigits[] = { '0', '1', '2', '3', '4', '5', '6', '7',
-//			'8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
-//
-//	// ------------------------ MD5 ------------------------------
+	// // ------------------------ MD5 ------------------------------
+	// private static char hexDigits[] = { '0', '1', '2', '3', '4', '5', '6',
+	// '7',
+	// '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
+	//
+	// // ------------------------ MD5 ------------------------------
 
 	/**
 	 * verify response status code
@@ -64,52 +67,78 @@ public class AssertBehavior {
 	 *            means headers: a:b c:d
 	 *            Set-Cookie:name=value;domain=10.232.4.30
 	 *            :8088;Expires=Thu,01-Jan-1970 00:00:10 GMT; Path=/
-	 *            cookie:tt=xx;cc=pp  @
+	 *            cookie:tt=xx;cc=pp @
 	 * 
 	 */
 	public static void assertHeaders(Response actualResponse,
 			String expectHeadersStr) {
 		String keyValuePairArray[] = expectHeadersStr.split("\\$");
-		
+
 		for (int i = 0; i < keyValuePairArray.length; i++) {
 			String keyValuePair[] = keyValuePairArray[i].split(":");
-			if(actualResponse.getHeader(keyValuePair[0].trim()) != null){
-				if(actualResponse.getHeader(keyValuePair[0].trim()).equals(keyValuePair[1].trim())){
+			if (actualResponse.getHeader(keyValuePair[0].trim()) != null) {
+				if (actualResponse.getHeader(keyValuePair[0].trim()).contains(
+						keyValuePair[1].trim())) {
 					logger.info("verify headers SUCCESS");
-				}else if(keyValuePair[0].trim().toLowerCase().equals("set-cookie")){
-					if(assertSetCookie(actualResponse.getHeader(keyValuePair[0].trim()), keyValuePair[1].trim())){
-						logger.info("verify headers SUCCESS");
-					}else{
-						logger.info("verify headers FAILED");
-						String actual = keyValuePair[0] + " = " + actualResponse.getHeader(keyValuePair[0].trim());
-						String expect = keyValuePair[0] + " = " + keyValuePair[1];
-						throw new ComparisonFailureHandle("verify headers", expect,
-								actual);
-					}
+				} else if (keyValuePair[0].trim().toLowerCase()
+						.equals("set-cookie")) {
+					assertSetCookie(actualResponse.getHeaders(),
+							keyValuePair[1].trim());
+				} else {
+					logger.info("verify headers FAILED");
+					String actual = keyValuePair[0] + " = "
+							+ actualResponse.getHeader(keyValuePair[0].trim());
+					String expect = keyValuePair[0] + " = " + keyValuePair[1];
+					throw new ComparisonFailureHandle("verify headers", expect,
+							actual);
 				}
-			}else{
+			} else {
 				logger.info("verify headers FAILED");
-				String actual = keyValuePair[0] + " = " + actualResponse.getHeader(keyValuePair[0].trim());
+				String actual = keyValuePair[0] + " = "
+						+ actualResponse.getHeader(keyValuePair[0].trim());
 				String expect = keyValuePair[0] + " = " + keyValuePair[1];
 				throw new ComparisonFailureHandle("verify headers", expect,
 						actual);
 			}
-			
-			
+
 		}
 	}
 
-	private static boolean assertSetCookie(String actulSetCookie, String expectSetCookie) {
-		boolean flag = true;
+	private static void assertSetCookie(Header[] actualHeaders,
+			String expectSetCookie) {
+		String expect = "Set-Cookie:" + expectSetCookie;
+		ArrayList<Header> setcookies = new ArrayList<Header>();
 		String keyValuePairArray[] = expectSetCookie.split(";");
 
-		for (int i = 0; i < keyValuePairArray.length; i++) {
-			if(! actulSetCookie.contains(keyValuePairArray[i])){
-				flag = false;
+		for (int index = 0; index < actualHeaders.length; index++) {
+			if (actualHeaders[index].getName().toLowerCase()
+					.equals("set-cookie")) {
+				setcookies.add(actualHeaders[index]);
 			}
 		}
-		
-		return flag;
+
+		if (setcookies.size() == 0) {
+			throw new ComparisonFailureHandle("verify Set-Cookie FAILED",
+					expect, "no Set-Cookie Header");
+		}
+
+		for (int num = 0; num < setcookies.size(); num++) {
+			String actulSetCookie = setcookies.get(num).getValue();
+			for (int i = 0; i < keyValuePairArray.length; i++) {
+				if (!actulSetCookie.contains(keyValuePairArray[i].trim())) {
+					break;
+				}
+				if ((i + 1) == keyValuePairArray.length){
+					logger.info("verify Set-Cookie SUCCESS");
+					return ;
+				}
+			}
+		}
+
+		logger.info("verify headers FAILED");
+		String actual = setcookies.toString();
+		throw new ComparisonFailureHandle("verify Set-Cookie FAILED", expect,
+				actual);
 	}
 
 	/**
@@ -118,30 +147,27 @@ public class AssertBehavior {
 	public static void assertHeaders(Response actualResponse,
 			Header[] expectHeaders) {
 
-		for(Header expectHeader: expectHeaders){
-			if(actualResponse.getHeader(expectHeader.getName()) != null){
-				if(actualResponse.getHeader(expectHeader.getName()).equals(expectHeader.getValue())){
+		for (Header expectHeader : expectHeaders) {
+			if (actualResponse.getHeader(expectHeader.getName()) != null) {
+				if (actualResponse.getHeader(expectHeader.getName()).equals(
+						expectHeader.getValue())) {
 					logger.info("verify headers SUCCESS");
-				}else if(expectHeader.getName().toLowerCase().equals("set-cookie")){
-					if(assertSetCookie(actualResponse.getHeader(expectHeader.getName()), expectHeader.getValue())){
-						logger.info("verify headers SUCCESS");
-					}else{
-						logger.info("verify headers FAILED");
-						String actual = expectHeader.getName() + " = " + actualResponse.getHeader(expectHeader.getName());
-						String expect = expectHeader.getName() + " = " + expectHeader.getValue();
-						throw new ComparisonFailureHandle("verify headers", expect,
-								actual);
-					}
+				} else if (expectHeader.getName().toLowerCase()
+						.equals("set-cookie")) {
+					assertSetCookie(actualResponse.getHeaders(),
+							expectHeader.getValue());
 				}
-			}else{
+			} else {
 				logger.info("verify headers FAILED");
-				String actual = expectHeader.getName() + " = " + actualResponse.getHeader(expectHeader.getName());
-				String expect = expectHeader.getName() + " = " + expectHeader.getValue();
+				String actual = expectHeader.getName() + " = "
+						+ actualResponse.getHeader(expectHeader.getName());
+				String expect = expectHeader.getName() + " = "
+						+ expectHeader.getValue();
 				throw new ComparisonFailureHandle("verify headers", expect,
 						actual);
 			}
 		}
-		
+
 		logger.info("verify headers SUCCESS");
 	}
 
@@ -154,63 +180,63 @@ public class AssertBehavior {
 		assertStatusLine(actualResponse, expectStatusLine);
 	}
 
-//	// ----------------------- Use MD5 to Verify --------------------------
-//
-//	// ------ MD5 help method --------------
-//	private static String bufferToHex(byte bytes[]) {
-//		return bufferToHex(bytes, 0, bytes.length);
-//	}
-//
-//	private static String bufferToHex(byte bytes[], int m, int n) {
-//		StringBuffer stringbuffer = new StringBuffer(2 * n);
-//		int k = m + n;
-//		for (int l = m; l < k; l++) {
-//			appendHexPair(bytes[l], stringbuffer);
-//		}
-//		return stringbuffer.toString();
-//	}
-//
-//	private static void appendHexPair(byte bt, StringBuffer stringbuffer) {
-//		char c0 = hexDigits[(bt & 0xf0) >> 4];
-//		char c1 = hexDigits[bt & 0xf];
-//		stringbuffer.append(c0);
-//		stringbuffer.append(c1);
-//	}
-//
-//	// ------ MD5 help method ---------------
-//
-//	/*
-//	 * convert String to MD5
-//	 */
-//	public static String stringToMD5(String string) {
-//		MessageDigest messagedigest = null;
-//
-//		try {
-//			messagedigest = MessageDigest.getInstance("MD5");
-//		} catch (NoSuchAlgorithmException e) {
-//			logger.info(AssertBehavior.class.getName()
-//					+ "initialize MD5Util fail!");
-//			logger.info(e);
-//			throw new FailedHandle(e.getMessage());
-//		}
-//
-//		// reset messagedigest
-//		messagedigest.reset();
-//		messagedigest.update(string.getBytes());
-//		return bufferToHex(messagedigest.digest());
-//	}
-//
-//	/*
-//	 * verify two String object's MD5 value
-//	 */
-//	public static void assertEqualsMD5(String expect, String actual) {
-//		if (stringToMD5(expect).equals(stringToMD5(actual))) {
-//			logger.info("verify two strings MD5 value SUCCESS");
-//		} else {
-//			logger.info("verify two strings MD5 value FAILED");
-//			throw new ComparisonFailureHandle("verify two strings MD5 value",
-//					expect, actual);
-//		}
-//	}
+	// // ----------------------- Use MD5 to Verify --------------------------
+	//
+	// // ------ MD5 help method --------------
+	// private static String bufferToHex(byte bytes[]) {
+	// return bufferToHex(bytes, 0, bytes.length);
+	// }
+	//
+	// private static String bufferToHex(byte bytes[], int m, int n) {
+	// StringBuffer stringbuffer = new StringBuffer(2 * n);
+	// int k = m + n;
+	// for (int l = m; l < k; l++) {
+	// appendHexPair(bytes[l], stringbuffer);
+	// }
+	// return stringbuffer.toString();
+	// }
+	//
+	// private static void appendHexPair(byte bt, StringBuffer stringbuffer) {
+	// char c0 = hexDigits[(bt & 0xf0) >> 4];
+	// char c1 = hexDigits[bt & 0xf];
+	// stringbuffer.append(c0);
+	// stringbuffer.append(c1);
+	// }
+	//
+	// // ------ MD5 help method ---------------
+	//
+	// /*
+	// * convert String to MD5
+	// */
+	// public static String stringToMD5(String string) {
+	// MessageDigest messagedigest = null;
+	//
+	// try {
+	// messagedigest = MessageDigest.getInstance("MD5");
+	// } catch (NoSuchAlgorithmException e) {
+	// logger.info(AssertBehavior.class.getName()
+	// + "initialize MD5Util fail!");
+	// logger.info(e);
+	// throw new FailedHandle(e.getMessage());
+	// }
+	//
+	// // reset messagedigest
+	// messagedigest.reset();
+	// messagedigest.update(string.getBytes());
+	// return bufferToHex(messagedigest.digest());
+	// }
+	//
+	// /*
+	// * verify two String object's MD5 value
+	// */
+	// public static void assertEqualsMD5(String expect, String actual) {
+	// if (stringToMD5(expect).equals(stringToMD5(actual))) {
+	// logger.info("verify two strings MD5 value SUCCESS");
+	// } else {
+	// logger.info("verify two strings MD5 value FAILED");
+	// throw new ComparisonFailureHandle("verify two strings MD5 value",
+	// expect, actual);
+	// }
+	// }
 
 }

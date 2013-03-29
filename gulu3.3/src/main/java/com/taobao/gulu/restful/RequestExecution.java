@@ -76,7 +76,7 @@ public abstract class RequestExecution extends Request {
 	 * 
 	 * @param requestURL
 	 * @param requestHeaders
-	 *            headers pattern: "a:b|c:d|cookie:tt=xx;cc=pp" means headers:
+	 *            headers pattern: "a:b$c:d$cookie:tt=xx;cc=pp" means headers:
 	 *            a:b c:d cookie:tt=xx;cc=pp
 	 * @return response object
 	 * @throws Exception
