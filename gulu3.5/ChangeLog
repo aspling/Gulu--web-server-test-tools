@@ -1,0 +1,22 @@
+3.2修改：
+1. 修改BodyEntity的设计，与HttpClient的RequestEntity相结合，同时又具有可扩展性；
+2. 修改Headers的存储数据结构，从Map类型改为Header类型；
+3. 去掉Set-Cookie对象及相关处理内容；
+4. 将Response Body保存在临时文件中，提供当Content-Length存在且小于Integer.MAX_VALUE时，
+        可以通过getResponseBodyAsString获取Body内容。否则需要通过getResponseBodyAsSteam获取InputStream
+5. 新增操作Manual
+
+3.3修改：
+1. 更改进程管理的实现，新增FileHandler和ProcessHandler接口及使用jsch工具实现；
+2. 新增用户信息加密；
+3. 新增进程管理及文件管理的测试代码；
+
+3.4 修改：
+1. 修改AssertBehavior的ResponseHeader的验证部分
+2. 修改Set-Cookie的验证部分
+3. 修改Operation Result的error message的储存
+4. 解决OperationException 和 perfTool里面的编码问题
+
+3.5修改
+1. 增加setHeader 对value为“”的支持
+2. 增加FileHandlerSFTPImpl类的关于上传文件夹传入本地地址为非文件夹时的报错信息
