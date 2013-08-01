@@ -2,6 +2,8 @@ package com.taobao.gulu.tools;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.security.MessageDigest;
@@ -46,6 +48,17 @@ public class Util {
 		} else {
 			return bytes;
 		}
+	}
+	
+	public static void appendtoFile(String filepath, String content) throws IOException{
+		File file = new File(filepath);
+		if(!file.exists()){
+			file.createNewFile();
+		}
+		FileWriter writer = new FileWriter(file, true); 
+		
+        writer.write(content);  
+        writer.close();  
 	}
 
 	public static void createFile(String path, long fileSize) {

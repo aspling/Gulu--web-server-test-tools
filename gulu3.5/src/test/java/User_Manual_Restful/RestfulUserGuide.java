@@ -3,6 +3,7 @@ package User_Manual_Restful;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
 
 import org.junit.Test;
 
@@ -20,6 +21,7 @@ import com.taobao.gulu.restful.PostRequest;
 import com.taobao.gulu.restful.PutRequest;
 import com.taobao.gulu.restful.Response;
 import com.taobao.gulu.restful.StringBodyEntity;
+import com.taobao.gulu.tools.Util;
 
 public class RestfulUserGuide extends BaseCase {
 	String requestURL = "http://10.232.4.32:8080/mod_monster_cookies_servlet/TestCase";
@@ -274,7 +276,55 @@ public class RestfulUserGuide extends BaseCase {
 		AssertFileBody.assertBody(response, expectFilePath);
 		// assert response body with local file in certain offset and size
 		AssertFileBody.assertBody(response, expectFilePath, 0, 0);
+	}
+	
+	@Test
+	public void test_InstallNginxServer() throws Exception{
+		NGINX.setNginxSrc("/home/admin/tengine_src");
+		ArrayList<String> moduleslist = new ArrayList<String>();
+		moduleslist.add("/home/admin/echo-nginx-module-master");
+		moduleslist.add("/home/admin/mod_eagleeye");
+		moduleslist.add("/home/admin/mod_tair");
+		NGINX.setModuleslist(moduleslist);
+		NGINX.deployNginxServerWithDebugBySrc();
 		
-		
+		NGINX.start();
+		GetRequest request = new GetRequest();
+		request.doRequest(NGINX.getRoot_url_adress());
+	}
+	
+	@Test
+	public void test_doreq() throws Exception{
+		GetRequest request = new GetRequest();
+		request.doRequest(NGINX.getRoot_url_adress());
+	}
+	
+	@Test
+	public void test_InstallNginxServerByRPM() throws Exception{
+		NGINX.setNginxSrc("/home/admin/t-coresystem-tengine-jushita-1.2.5-11.el5.x86_64.rpm");
+		NGINX.deployNginxServerByRPM();
+	}
+	
+	@Test
+	public void test_removeNginxServerByRPM() throws Exception{
+		NGINX.setNginxSrc("t-coresystem-tengine-jushita");
+		NGINX.removeNginxServerByRPM();
+	}
+	
+	@Test
+	public void test_show(){
+		System.out.println(Util.getEncryptedPasswords("taobao!@#"));
+	}
+	
+	@Test
+	public void test_InstallNginxServerByYUM() throws Exception{
+		NGINX.setNginxSrc("t-coresystem-tengine-jushita");
+		NGINX.deployNginxServerByYUM();
+	}
+	
+	@Test
+	public void test_removeNginxServerByYUM() throws Exception{
+		NGINX.setNginxSrc("t-coresystem-tengine-jushita");
+		NGINX.removeNginxServerByYUM();
 	}
 }

@@ -2,6 +2,8 @@ package com.taobao.gulu.server;
 
 import java.net.InetSocketAddress;
 import java.nio.channels.SocketChannel;
+import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 
@@ -9,13 +11,19 @@ import com.taobao.gulu.handler.OperationResult;
 import com.taobao.gulu.handler.ssh.encrypt.EncryptedPasswords;
 import com.taobao.gulu.handler.ssh.processhandler.ProcessHandlerExecImpl;
 import com.taobao.gulu.tools.ComparisonFailureHandle;
+import com.taobao.gulu.tools.OperationException;
 
 /**
- * <p>Title: NginxServer.java</p>
- * <p>Description: Nginx Server Manage</p>
+ * <p>
+ * Title: NginxServer.java
+ * </p>
+ * <p>
+ * Description: Nginx Server Manage
+ * </p>
+ * 
  * @author: gongyuan.cz
- * @email:  gongyuan.cz@taobao.com
- * @blog:   100continue.iteye.com
+ * @email: gongyuan.cz@taobao.com
+ * @blog: 100continue.iteye.com
  */
 public class NginxServer implements Server {
 	private static Logger logger = Logger.getLogger(NginxServer.class);
@@ -32,9 +40,27 @@ public class NginxServer implements Server {
 	private String default_conf = "";
 	private String username = "";
 	private String password = "";
+	private ArrayList<String> moduleslist = new ArrayList<String>();
+	private String nginxSrc = "";
 
 	public String getHost() {
 		return host;
+	}
+
+	public ArrayList<String> getModuleslist() {
+		return moduleslist;
+	}
+
+	public void setModuleslist(ArrayList<String> moduleslist) {
+		this.moduleslist = moduleslist;
+	}
+
+	public String getNginxSrc() {
+		return nginxSrc;
+	}
+
+	public void setNginxSrc(String nginxSrc) {
+		this.nginxSrc = nginxSrc;
 	}
 
 	public void setHost(String host) {
@@ -128,8 +154,8 @@ public class NginxServer implements Server {
 	public void setDefault_conf(String default_conf) {
 		this.default_conf = default_conf;
 	}
-	
-	public boolean reload(){
+
+	public boolean reload() {
 		try {
 			String default_conf_directory = conf_file_directory + "/"
 					+ default_conf;
@@ -229,26 +255,24 @@ public class NginxServer implements Server {
 	}
 
 	@Override
-	public void doServerCtl(String conf, String action,
-			String expectMessage) throws Exception {
-		EncryptedPasswords encryptedPasswords = new EncryptedPasswords(
-				username, password);
-		ProcessHandlerExecImpl process = new ProcessHandlerExecImpl(
-				encryptedPasswords);
-		
+	public void doServerCtl(String conf, String action, String expectMessage)
+			throws Exception {
+		ProcessHandlerExecImpl process = getProcessHandler();
+
 		String cmd = execute_cmd + " -c " + conf + " -s " + action;
 		OperationResult result;
-		
-		if(username == null || password == null || host == null){
+
+		if (username == null || password == null || host == null) {
 			result = process.executeCmd("", cmd, false);
-		}else{
+		} else {
 			result = process.executeCmd(host, cmd, false);
 		}
-		
-		if(!"".equals(expectMessage)){
-			if(!result.getMsg().contains(expectMessage))
-				throw new ComparisonFailureHandle("verify command execute output",
-						expectMessage, result.getMsg());
+
+		if (!"".equals(expectMessage)) {
+			if (!result.getMsg().contains(expectMessage))
+				throw new ComparisonFailureHandle(
+						"verify command execute output", expectMessage,
+						result.getMsg());
 		}
 	}
 
@@ -266,16 +290,16 @@ public class NginxServer implements Server {
 	}
 
 	@Override
-	public void startServerError(String configFileName, String errorMessage) throws Exception {
+	public void startServerError(String configFileName, String errorMessage)
+			throws Exception {
 		String conf = conf_file_directory + configFileName;
 		doServerCtl(conf, action_start, errorMessage);
 	}
-	
+
 	@Override
 	public void startServerError(String errorMessage) throws Exception {
 		startServerError(getDefault_conf(), errorMessage);
 	}
-
 
 	@Override
 	public void stopServerError(String configFileName, String errorMessage) {
@@ -286,9 +310,94 @@ public class NginxServer implements Server {
 			logger.error(e);
 		}
 	}
-	
+
 	@Override
 	public void stopServerError(String errorMessage) {
 		stopServerError(getDefault_conf(), errorMessage);
+	}
+
+	public void deployNginxServerWithDebugBySrc() throws Exception {
+		ProcessHandlerExecImpl process = getProcessHandler();
+
+		String deployCMD = "cd " + nginxSrc + "; ./configure --prefix="
+				+ server_file_directory;
+		deployCMD = deployCMD + addModules(moduleslist);
+		deployCMD = deployCMD + " --with-debug";
+
+		process.executeCmd(getHost(), deployCMD, false);
+		TimeUnit.SECONDS.sleep(2);
+
+		String makeCMD = "cd " + nginxSrc + "; make -j";
+		process.executeCmd(getHost(), makeCMD, false);
+		TimeUnit.SECONDS.sleep(2);
+
+		String makeinstallCMD = "cd " + nginxSrc + "; make install";
+		process.executeCmd(getHost(), makeinstallCMD, false);
+		TimeUnit.SECONDS.sleep(2);
+	}
+
+	public void deployNginxServerBySrc() throws Exception {
+		ProcessHandlerExecImpl process = getProcessHandler();
+
+		String deployCMD = "cd " + nginxSrc + "; ./configure --prefix="
+				+ server_file_directory;
+		deployCMD = deployCMD + addModules(moduleslist);
+
+		process.executeCmd(getHost(), deployCMD, false);
+		TimeUnit.SECONDS.sleep(2);
+
+		String makeCMD = "cd " + nginxSrc + "; make -j";
+		process.executeCmd(getHost(), makeCMD, false);
+		TimeUnit.SECONDS.sleep(2);
+
+		String makeinstallCMD = "cd " + nginxSrc + "; make install";
+		process.executeCmd(getHost(), makeinstallCMD, false);
+		TimeUnit.SECONDS.sleep(2);
+	}
+
+	public String deployNginxServerByRPM() throws Exception {
+		ProcessHandlerExecImpl process = getProcessHandler();
+
+		String deployCMD = "rpm -ivh " + nginxSrc;
+		return process.executeCmdByRoot(getHost(), deployCMD, false).getMsg().trim();
+	}
+
+	public String removeNginxServerByRPM() throws Exception {
+		ProcessHandlerExecImpl process = getProcessHandler();
+
+		String removeCMD = "rpm -e " + nginxSrc;
+		return process.executeCmdByRoot(getHost(), removeCMD, false).getMsg().trim();
+	}
+	
+	public String deployNginxServerByYUM() throws Exception{
+		ProcessHandlerExecImpl process = getProcessHandler();
+		
+		String deployCMD = "yum install -y " + nginxSrc + " -b test";
+		return process.executeCmdByRoot(getHost(), deployCMD, false).getMsg().trim();
+	}
+	
+	public String removeNginxServerByYUM() throws Exception{
+		ProcessHandlerExecImpl process = getProcessHandler();
+
+		String removeCMD = "yum remove -y " + nginxSrc;
+		return process.executeCmdByRoot(getHost(), removeCMD, false).getMsg().trim();
+	
+	}
+
+	private String addModules(ArrayList<String> moduleslist) {
+		String addModulesCMD = "";
+		for (String module : moduleslist) {
+			addModulesCMD = addModulesCMD + " --add-module=" + module;
+		}
+
+		return addModulesCMD;
+	}
+
+	private ProcessHandlerExecImpl getProcessHandler() {
+		EncryptedPasswords encryptedPasswords = new EncryptedPasswords(
+				username, password);
+		ProcessHandlerExecImpl process = new ProcessHandlerExecImpl(
+				encryptedPasswords);
+		return process;
 	}
 }

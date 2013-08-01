@@ -20,3 +20,4 @@
 3.5修改
 1. 增加setHeader 对value为“”的支持
 2. 增加FileHandlerSFTPImpl类的关于上传文件夹传入本地地址为非文件夹时的报错信息
+3. Util增加写入文件的接口
