@@ -9,18 +9,18 @@ import org.junit.Test;
 
 import Base.BaseCase;
 
-import com.taobao.gulu.restful.AssertFileBody;
-import com.taobao.gulu.restful.AssertStringBody;
-import com.taobao.gulu.restful.ByteArrayBodyEntity;
-import com.taobao.gulu.restful.DeleteRequest;
-import com.taobao.gulu.restful.FileBodyEntity;
-import com.taobao.gulu.restful.GetRequest;
-import com.taobao.gulu.restful.InputStreamBodyEntity;
-import com.taobao.gulu.restful.MultipartBodyEntity;
-import com.taobao.gulu.restful.PostRequest;
-import com.taobao.gulu.restful.PutRequest;
-import com.taobao.gulu.restful.Response;
-import com.taobao.gulu.restful.StringBodyEntity;
+import com.taobao.gulu.http.AssertFileBody;
+import com.taobao.gulu.http.AssertStringBody;
+import com.taobao.gulu.http.ByteArrayBodyEntity;
+import com.taobao.gulu.http.DeleteRequest;
+import com.taobao.gulu.http.FileBodyEntity;
+import com.taobao.gulu.http.GetRequest;
+import com.taobao.gulu.http.InputStreamBodyEntity;
+import com.taobao.gulu.http.MultipartBodyEntity;
+import com.taobao.gulu.http.PostRequest;
+import com.taobao.gulu.http.PutRequest;
+import com.taobao.gulu.http.Response;
+import com.taobao.gulu.http.StringBodyEntity;
 import com.taobao.gulu.tools.Util;
 
 public class RestfulUserGuide extends BaseCase {

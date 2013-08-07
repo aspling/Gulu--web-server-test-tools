@@ -6,8 +6,8 @@ import java.nio.channels.SocketChannel;
 import org.apache.log4j.Logger;
 
 import com.taobao.gulu.handler.OperationResult;
-import com.taobao.gulu.handler.ssh.encrypt.EncryptedPasswords;
-import com.taobao.gulu.handler.ssh.processhandler.ProcessHandlerExecImpl;
+import com.taobao.gulu.handler.jsch.authorization.PasswordAuthorization;
+import com.taobao.gulu.handler.jsch.processhandler.ProcessHandlerExecImpl;
 import com.taobao.gulu.tools.ComparisonFailureHandle;
 
 /**
@@ -205,10 +205,10 @@ public class ApacheServer implements Server {
 	public void doServerCtl(String conf, String action,
 			String expectMessage) throws Exception {
 		
-		EncryptedPasswords encryptedPasswords = new EncryptedPasswords(
+		PasswordAuthorization passwords = new PasswordAuthorization(
 				username, password);
 		ProcessHandlerExecImpl process = new ProcessHandlerExecImpl(
-				encryptedPasswords);
+				passwords);
 		
 		String cmd = execute_cmd + " -f " + conf + " -k " + action;
 		OperationResult result;

@@ -8,10 +8,9 @@ import java.util.concurrent.TimeUnit;
 import org.apache.log4j.Logger;
 
 import com.taobao.gulu.handler.OperationResult;
-import com.taobao.gulu.handler.ssh.encrypt.EncryptedPasswords;
-import com.taobao.gulu.handler.ssh.processhandler.ProcessHandlerExecImpl;
+import com.taobao.gulu.handler.jsch.authorization.PasswordAuthorization;
+import com.taobao.gulu.handler.jsch.processhandler.ProcessHandlerExecImpl;
 import com.taobao.gulu.tools.ComparisonFailureHandle;
-import com.taobao.gulu.tools.OperationException;
 
 /**
  * <p>
@@ -372,7 +371,14 @@ public class NginxServer implements Server {
 	public String deployNginxServerByYUM() throws Exception{
 		ProcessHandlerExecImpl process = getProcessHandler();
 		
-		String deployCMD = "yum install -y " + nginxSrc + " -b test";
+		String deployCMD = "yum install -y " + nginxSrc;
+		return process.executeCmdByRoot(getHost(), deployCMD, false).getMsg().trim();
+	}
+	
+	public String updateNginxServerByYUM() throws Exception{
+		ProcessHandlerExecImpl process = getProcessHandler();
+		
+		String deployCMD = "yum update -y " + nginxSrc;
 		return process.executeCmdByRoot(getHost(), deployCMD, false).getMsg().trim();
 	}
 	
@@ -394,10 +400,10 @@ public class NginxServer implements Server {
 	}
 
 	private ProcessHandlerExecImpl getProcessHandler() {
-		EncryptedPasswords encryptedPasswords = new EncryptedPasswords(
+		PasswordAuthorization passwords = new PasswordAuthorization(
 				username, password);
 		ProcessHandlerExecImpl process = new ProcessHandlerExecImpl(
-				encryptedPasswords);
+				passwords);
 		return process;
 	}
 }

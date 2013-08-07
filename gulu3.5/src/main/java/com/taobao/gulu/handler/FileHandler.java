@@ -18,7 +18,7 @@ public interface FileHandler
 	 * @param srcFile - file path for the file you want to copy
 	 * @param destServer - destination server IP
 	 * @param destDir - the place to store copy file. empty means uses the source file path
-	 * @return
+	 * @return OperationResult
 	 */
 	public OperationResult copyFile(String srcServer, String srcFile, String destServer, String destDir);
 	
@@ -28,7 +28,7 @@ public interface FileHandler
 	 * @param srcServer - source server IP
 	 * @param srcFile - file path for the file you want to download
 	 * @param localDir - the place to store the download file
-	 * @return
+	 * @return OperationResult
 	 */
 	public OperationResult downloadFile(String srcServer, String srcFile, String localDir);
 	
@@ -39,7 +39,7 @@ public interface FileHandler
 	 * @param destServer - destination server IP
 	 * @param destDir - the place to store upload file in destination server
 	 * @param localDir - file path for the file you want to upload
-	 * @return
+	 * @return OperationResult
 	 */
 	public OperationResult uploadFile(String destServer, String destDir, String localDir);
 	
@@ -48,7 +48,7 @@ public interface FileHandler
 	 * <p>Description: copy file from source server to destination server</p>
 	 * @param srcUri - format like: 10.232.129.51:/home/admin/workspace/test.log
 	 * @param destUri - format like: 10.232.129.51:/home/admin/workspace
-	 * @return
+	 * @return OperationResult
 	 */
 	public OperationResult copyFile(String srcUri, String destUri);
 	
@@ -59,7 +59,7 @@ public interface FileHandler
 	 * @param srcFile - file path for the file you want to copy
 	 * @param destServer - destination server
 	 * @param destFile - the place to store the copy file and the new file name
-	 * @return
+	 * @return OperationResult
 	 */
 	public OperationResult copyRenameFile(String srcServer, String srcFile, String destServer, String destFile);
 
@@ -70,7 +70,7 @@ public interface FileHandler
 	 * @param srcDir - folder path for the folder you want to copy
 	 * @param destServer - destination server IP
 	 * @param destDir - the place to store the copy folder. empty means uses the source folder path to store
-	 * @return
+	 * @return OperationResult
 	 */
 	public OperationResult copyDirectory(String srcServer, String srcDir, String destServer, String destDir);
 	
@@ -79,7 +79,7 @@ public interface FileHandler
 	 * <p>Description: copy the folder from source server to destination server</p>
 	 * @param srcUri - format like: 10.232.129.51:/home/admin/workspace
 	 * @param destUri - format like: 10.232.129.52:/home/admin/workspace
-	 * @return
+	 * @return OperationResult
 	 */
 	public OperationResult copyDirectory(String srcUri, String destUri);
 	
@@ -89,7 +89,7 @@ public interface FileHandler
 	 * @param srcServer - source server IP
 	 * @param srcDir - folder path for the folder you want to download
 	 * @param localDir - the place to store the download folder
-	 * @return
+	 * @return OperationResult
 	 */
 	public OperationResult downloadDirectory(String srcServer, String srcDir, String localDir); 
 	
@@ -99,7 +99,7 @@ public interface FileHandler
 	 * @param destServer - destination server IP
 	 * @param destDir - the place to store the upload file in destination server
 	 * @param localDir - the folder you want to upload in local server
-	 * @return
+	 * @return OperationResult
 	 */
 	public OperationResult uploadDirectory(String destServer, String destDir, String localDir);
 
@@ -110,7 +110,7 @@ public interface FileHandler
 	 * @param srcDir - folder path for the folder you want to copy
 	 * @param destServer - destination server IP
 	 * @param destPath - the place to store the copy folder and rename it
-	 * @return
+	 * @return OperationResult
 	 */
 	public OperationResult copyRenameDirectory(String srcServer, String srcDir, String destServer, String destPath);
 	
@@ -119,9 +119,9 @@ public interface FileHandler
 	 * <p>Description: create a directory in destination server</p>
 	 * @param destServer - destination server IP
 	 * @param dir - the directory you want to create
-	 * @return create success return true or false
+	 * @return OperationResult
 	 */
-	public boolean mkdir(String destServer, String dir);
+	public OperationResult mkdir(String destServer, String dir);
 	
 	
 	/**
@@ -138,7 +138,7 @@ public interface FileHandler
 	 * <p>Description: check the file or folder exist or not in destination server</p>
 	 * @param destServer - destination server IP
 	 * @param entryName - the file or folder you want to check
-	 * @return exist return true or false
+	 * @return ture / false
 	 */
 	public boolean isEntryExisted(String destServer, String entryName);
 	
@@ -148,7 +148,7 @@ public interface FileHandler
 	 * @param destServer - destination server IP
 	 * @param entryName - the file or folder path you want to delete
 	 * @param isKeepDir - if the entry name is directory, keep the directory folder or not
-	 * @return
+	 * @return OperationResult
 	 */
 	public OperationResult deleteEntry(String destServer, String entryName, boolean isKeepDir);
 
@@ -157,7 +157,7 @@ public interface FileHandler
 	 * <p>Description: delete the file or directory in destination server</p>
 	 * @param entryUri - format like: 10.232.129.51:/home/admin/workspace
 	 * @param isKeepDir - if the entry uri is directory, keep the empty directory or not
-	 * @return
+	 * @return OperationResult
 	 */
 	public OperationResult deleteEntry(String entryUri, boolean isKeepDir);
 
@@ -167,7 +167,7 @@ public interface FileHandler
 	 * @param destServer - destination server IP
 	 * @param entryName - the file or folder you want to rename
 	 * @param newEntryName - the new file or folder name
-	 * @return
+	 * @return OperationResult
 	 */
 	public OperationResult rename(String destServer, String entryName, String newEntryName);
 	
@@ -177,7 +177,7 @@ public interface FileHandler
 	 * @param destServer - destination server IP
 	 * @param filePath - file path
 	 * @param regexStr - key words or regular expression
-	 * @return
+	 * @return 
 	 */
 	public String getContent(String destServer, String filePath,  String regexStr);
 	
@@ -188,7 +188,7 @@ public interface FileHandler
 	 * @param entryName - the file path you want to chmod
 	 * @param mode - mode likes: 777, 742
 	 * @param isRecursive - whether recursive change file and folder mode or not
-	 * @return
+	 * @return OperationResult
 	 */
 	public OperationResult setMode(String destServer, String entryName, int mode, boolean isRecursive);
 	
@@ -200,7 +200,7 @@ public interface FileHandler
 	 * @param owner - the owner for the file or folder
 	 * @param group - the group for the file or folder
 	 * @param isRecursive - whether recursive change file and folder owner or not
-	 * @return
+	 * @return OperationResult
 	 */
 	public OperationResult setOwner(String destServer, String entryName, String owner, String group, boolean isRecursive);
 
@@ -209,7 +209,7 @@ public interface FileHandler
 	 * <p>Description: check is a directory or not</p>
 	 * @param destServer - destination server IP
 	 * @param entryName -  the directory path
-	 * @return it is a directory return true or false
+	 * @return return ture / false
 	 */
 	public boolean IsDirectory(String destServer, String entryName);
 
