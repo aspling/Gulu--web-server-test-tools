@@ -47,12 +47,15 @@ public class Response {
 		int BUFFER_SIZE = 1024;
 		byte[] buf = new byte[BUFFER_SIZE];
 		int size = 0;
-		bis = new BufferedInputStream(responseBodyAsStream);
-		fos = new FileOutputStream(this.tmpfile);
-		while ((size = bis.read(buf)) != -1)
-			fos.write(buf, 0, size);
-		fos.close();
-		bis.close();
+
+		if (responseBodyAsStream != null) {
+			bis = new BufferedInputStream(responseBodyAsStream);
+			fos = new FileOutputStream(this.tmpfile);
+			while ((size = bis.read(buf)) != -1)
+				fos.write(buf, 0, size);
+			fos.close();
+			bis.close();
+		}
 	}
 
 	public int getStatusCode() {
@@ -94,7 +97,8 @@ public class Response {
 		} else {
 			String warnInfo = "Going to buffer response body of large or unknown size.\n "
 					+ "Using getResponseBodyAsStream instead is recommended.\n"
-					+ "or you can read the response body from local file: " + tmpfile;
+					+ "or you can read the response body from local file: "
+					+ tmpfile;
 			logger.warn(warnInfo);
 			throw new FailedHandle(warnInfo);
 		}

@@ -19,6 +19,7 @@ import com.taobao.gulu.http.InputStreamBodyEntity;
 import com.taobao.gulu.http.MultipartBodyEntity;
 import com.taobao.gulu.http.PostRequest;
 import com.taobao.gulu.http.PutRequest;
+import com.taobao.gulu.http.Request.Version;
 import com.taobao.gulu.http.Response;
 import com.taobao.gulu.http.StringBodyEntity;
 import com.taobao.gulu.tools.Util;
@@ -326,5 +327,19 @@ public class RestfulUserGuide extends BaseCase {
 	public void test_removeNginxServerByYUM() throws Exception{
 		NGINX.setNginxSrc("t-coresystem-tengine-jushita");
 		NGINX.removeNginxServerByYUM();
+	}
+	
+	@Test
+	public void test_test() throws Exception{
+		GetRequest get = new GetRequest();
+		String url = "http://10.232.38.18:8883/i6/200/000/2000041667368/T1XTazXg4bXXcWeqbX.desc%7Cvar%5Edesc%3Bsign%5Ee5bfdaaccd9f5ba1145bd48e833268b8%3Blang%5Egbk%3Bt%5E1374719072"; 
+		String headerStr = "Accept-Language: zh-CN,zh;q=0.8$If-Modified-Since: Wed, 24 Jul 2013 11:09:25 GMT$Accept-Charset: GBK,utf-8;q=0.7,*;q=0.3$Accept-Encoding: gzip,deflate,sdch$Referer: http://item.daily.taobao.net/item.htm?id=2000041667368$User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_4) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.43 Safari/537.31$Accept: */*$Connection: close$Cache-Control: max-age=0";
+//		get.setHeaders(headerStr);
+		get.setUrl("http://10.232.4.35:8066/");
+		get.setProtocolVersion(Version.HTTP09);
+		
+		get.showRequest();
+		get.doRequest().showResponse();
+		
 	}
 }

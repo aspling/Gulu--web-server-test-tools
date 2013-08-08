@@ -12,7 +12,9 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.NameValuePair;
+import org.apache.commons.httpclient.params.HttpClientParams;
 import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
+import org.apache.commons.httpclient.*;
 
 public abstract class RequestExecution extends Request {
 
@@ -32,29 +34,20 @@ public abstract class RequestExecution extends Request {
 	public Response doRequest(HttpMethod httpMethod) throws Exception {
 
 		Response response = new Response();
+		
+		httpMethod.getParams().setVersion(getProtocolVersion());
 
 		HttpClient httpClient = new HttpClient();
 		HttpConnectionManagerParams managerParams = httpClient
 				.getHttpConnectionManager().getParams();
 		managerParams.setConnectionTimeout(getConnectTimeOut());
 		managerParams.setSoTimeout(getSoTimeOut());
+		
 		httpClient.executeMethod(httpMethod);
 
 		response.setStatusCode(httpMethod.getStatusCode());
 		response.setStatusLine(httpMethod.getStatusText());
-		// Header[] headers = httpMethod.getResponseHeaders();
-		// Map<String, String> headersMap = new HashMap<String, String>();
-		//
-		// for (int count = 0; count < headers.length; count++) {
-		// if (headers[count].getName().trim().equals("Set-Cookie")) {
-		// response.addSetCookie(headers[count].getValue().trim());
-		// } else {
-		// headersMap.put(headers[count].getName(),
-		// headers[count].getValue());
-		// }
-		// }
 		response.setHeaders(httpMethod.getResponseHeaders());
-
 		response.setResponseBodyAsStream(httpMethod.getResponseBodyAsStream());
 
 		httpMethod.releaseConnection();

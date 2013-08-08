@@ -1,6 +1,7 @@
 package com.taobao.gulu.http;
 
 import org.apache.commons.httpclient.Header;
+import org.apache.commons.httpclient.HttpVersion;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.log4j.Logger;
 
@@ -26,8 +27,12 @@ public class Request {
 	private NameValuePair[] pairsBody = null;
 	private int connectTimeOut = 30000;
 	private int soTimeOut = 120000;
+	private HttpVersion protocol_version = HttpVersion.HTTP_1_1;
 	public static final String DEFAULT_CONTENT_TYPE = "application/octet-stream";
 	public static final String DEFAULT_CHARSET = "ISO-8859-1";
+	public enum Version{
+		HTTP11, HTTP10, HTTP09
+	}
 
 	public String getUrl() {
 		return url;
@@ -43,6 +48,24 @@ public class Request {
 
 	public void setHeaders(Header[] headers) {
 		this.headers = headers;
+	}
+	
+	public void setProtocolVersion(Version version){
+		switch(version){
+		case HTTP11:
+			this.protocol_version = HttpVersion.HTTP_1_1;
+			break;
+		case HTTP10:
+			this.protocol_version = HttpVersion.HTTP_1_0;
+			break;
+		case HTTP09:
+			this.protocol_version = HttpVersion.HTTP_0_9;
+			break;
+		}
+	}
+	
+	public HttpVersion getProtocolVersion(){
+		return protocol_version;
 	}
 
 	/**
@@ -60,7 +83,7 @@ public class Request {
 		for (int i = 0; i < keyValuePairArray.length; i++) {
 			String keyValuePair[] = keyValuePairArray[i].split(":");
 			try{
-				headers[i] = new Header(keyValuePair[0], keyValuePair[1].trim());
+				headers[i] = new Header(keyValuePair[0], keyValuePairArray[i].substring(keyValuePair[0].length()+1));
 			}catch (ArrayIndexOutOfBoundsException e) {
 				headers[i] = new Header(keyValuePair[0], "");
 			}
@@ -104,7 +127,7 @@ public class Request {
 		NameValuePair[] pairs = new NameValuePair[nameValuePairArray.length];
 		for (int i = 0; i < nameValuePairArray.length; i++) {
 			String keyValuePair[] = nameValuePairArray[i].split("=");
-			pairs[i] = new NameValuePair(keyValuePair[0], keyValuePair[1]);
+			pairs[i] = new NameValuePair(keyValuePair[0], nameValuePairArray[i].substring(keyValuePair[0].length()+1));
 		}
 		this.pairsBody = pairs;
 	}
