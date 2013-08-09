@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans default-autowire="byName">
+
+   <bean id="nginxServer" class="com.taobao.gulu.server.NginxServer">
+        <property name="host" value="10.232.4.30"/>
+       	<property name="port" value="9099"/>
+       	<property name="root_url_adress" value="http://10.232.4.30:9088/" />
+       	<property name="conf_file_directory" value="/home/admin/nginx_install_test/conf/"/>
+		<property name="execute_cmd" value="/home/admin/nginx_install_test/sbin/nginx"/>
+		<property name="server_file_directory" value="/home/admin/nginx_install_test/" />
+		<property name="action_start" value="start" />
+		<property name="action_stop" value="stop" />
+		<property name="action_restart" value="restart" />
+		<property name="default_conf" value="nginx.conf" />
+		<property name="username" value="gongyuan.cz" />
+		<property name="password" value="TktfqFKnNuNYetUFcgz411WCvzqXSvHR" />
+    </bean>
+
+</beans>
